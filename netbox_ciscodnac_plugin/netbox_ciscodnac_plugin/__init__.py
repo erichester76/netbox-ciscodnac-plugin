@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from dnacentersdk import api
 from ..models import Settings
+from concurrent.futures import ThreadPoolExecutor
 
 
 class CiscoDNAC:
@@ -114,37 +115,27 @@ class CiscoDNAC:
         Map Device Serial Number to Site ID from Cisco DNA Center.
         """
         results = {}
-        
-        # Fetch sites from DNA Center
-        sites_response = tenant.sites.get_site().response
-        if not sites_response:
-            raise ValueError("No sites found in Cisco DNA Center.")
-        
-        for site in sites_response:
-            # Fetch membership for each site
+
+        # Fetch sites from DNA Center in batches
+        sites = cls.get_paginated_data(tenant.sites.get_site, tenant)
+
+        def process_site(site):
+            # Fetch membership for the site
             membership = tenant.sites.get_membership(site_id=site.id)
-            
-            if not membership or not hasattr(membership, 'device'):
-                # Log if membership is None or doesn't have 'device'
-                print(f"No membership or devices found for site {site.id}")
-                continue  # Skip if no membership or devices
+            site_devices = {}
+            if membership and hasattr(membership, 'device'):
+                for members in membership.device:
+                    for device in members.response:
+                        site_devices[device.serialNumber] = site.id
+            return site_devices
 
-            if membership.device is None:
-                # Log and continue if device is None
-                print(f"membership.device is None for site {site.id}")
-                continue  # Skip the site if devices are missing
+        # Process sites in parallel to fetch membership data
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            site_device_maps = list(executor.map(process_site, sites))
 
-            # If membership contains devices, map them
-            for members in membership.device:
-                if not members or not hasattr(members, 'response'):
-                    print(f"No response found in membership for site {site.id}")
-                    continue  # Skip if no valid device response
-                
-                for device in members.response:
-                    if hasattr(device, 'serialNumber'):
-                        results[device.serialNumber] = site.id
-                    else:
-                        print(f"Device without serial number found in site {site.id}")
-        
+        # Combine results from all processed sites
+        for site_device_map in site_device_maps:
+            results.update(site_device_map)
+
         return results
 
