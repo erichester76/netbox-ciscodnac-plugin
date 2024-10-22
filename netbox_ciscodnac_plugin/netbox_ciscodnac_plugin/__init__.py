@@ -1,7 +1,7 @@
+from concurrent.futures import ThreadPoolExecutor
 from django.shortcuts import get_object_or_404
 from dnacentersdk import api
 from ..models import Settings
-from concurrent.futures import ThreadPoolExecutor
 from django.core.cache import cache
 
 
