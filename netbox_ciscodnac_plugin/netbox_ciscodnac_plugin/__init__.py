@@ -111,11 +111,14 @@ class CiscoDNAC:
     @classmethod
     def devices_to_sites(cls, tenant):
         """
-        Map Device Serial Number to Site ID from Cisco DNA Center
+        Map Device Serial Number to Site ID from Cisco DNA Center.
         """
         results = {}
         for site in tenant.sites.get_site().response:
-            for members in tenant.sites.get_membership(site_id=site.id).device:
-                for device in members.response:
-                    results[device.serialNumber] = site.id
+            membership = tenant.sites.get_membership(site_id=site.id)
+            
+            if membership and hasattr(membership, 'device'):  # Check if the response contains devices
+                for members in membership.device:
+                    for device in members.response:
+                        results[device.serialNumber] = site.id
         return results
