@@ -64,6 +64,7 @@ class CiscoDNAC:
             self.dnac_status[tenant.hostname] = error_msg
             return False, None
 
+    @classmethod
     def get_paginated_data(self, tenant, api_call, limit=500, **kwargs):
         """
         Generic method to handle paginated API responses from Cisco DNA Center.
@@ -96,13 +97,13 @@ class CiscoDNAC:
         """
         Get all Devices from Cisco DNA Center (handles pagination).
         """
-        return self.get_paginated_data(tenant, tenant.devices.get_device_list)
+        return self.__class__.get_paginated_data(tenant, tenant.devices.get_device_list)
 
     def sites(self, tenant):
         """
         Get all Sites from Cisco DNA Center (handles pagination).
         """
-        return self.get_paginated_data(tenant, tenant.sites.get_site)
+        return self.__class__.get_paginated_data(tenant, tenant.sites.get_site)
 
     def sites_count(self, tenant):
         """
@@ -124,6 +125,7 @@ class CiscoDNAC:
         if cached_sites is None:
             # Fetch sites from DNA Center in batches and cache the result
             sites = cls.get_paginated_data(tenant, tenant.sites.get_site)
+
             cache.set(cache_key_sites, sites, timeout=300)  # Cache for 5 minutes
         else:
             sites = cached_sites
