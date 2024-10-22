@@ -3,7 +3,10 @@ from django.shortcuts import get_object_or_404
 from dnacentersdk import api
 from ..models import Settings
 from django.core.cache import cache
+import logging
 
+# Assuming logger is set up
+logger = logging.getLogger(__name__)
 
 class CiscoDNAC:
 
@@ -130,24 +133,54 @@ class CiscoDNAC:
         else:
             sites = cached_sites
 
-        def process_site(site):
-            # Cache key for site membership
-            cache_key_membership = f'dnac_membership_{site.id}'
-            cached_membership = cache.get(cache_key_membership)
+    def process_site(site, tenant):
+        """
+        Process a site and map its devices to site IDs, with caching and error handling.
+        """
+        # Cache key for site membership
+        cache_key_membership = f'dnac_membership_{site.id}'
+        cached_membership = cache.get(cache_key_membership)
 
+        try:
             if cached_membership is None:
                 # Fetch membership for the site and cache it
                 membership = tenant.sites.get_membership(site_id=site.id)
-                cache.set(cache_key_membership, membership, timeout=300)  # Cache for 5 minutes
+                
+                # Ensure that membership is not None and cache it only if valid
+                if membership:
+                    cache.set(cache_key_membership, membership, timeout=300)  # Cache for 5 minutes
+                else:
+                    logger.warning(f"Membership for site {site.id} is None. Skipping.")
+                    return {}
+
             else:
                 membership = cached_membership
 
+            # Initialize the device mapping
             site_devices = {}
+
+            # Check if membership contains devices and is structured as expected
             if membership and hasattr(membership, 'device'):
-                for members in membership.device:
-                    for device in members.response:
-                        site_devices[device.serialNumber] = site.id
+                if membership.device:
+                    for members in membership.device:
+                        if hasattr(members, 'response') and members.response:
+                            for device in members.response:
+                                if hasattr(device, 'serialNumber'):
+                                    site_devices[device.serialNumber] = site.id
+                                else:
+                                    logger.warning(f"Device in site {site.id} has no serialNumber.")
+                        else:
+                            logger.warning(f"No response found for membership devices in site {site.id}.")
+                else:
+                    logger.warning(f"Membership for site {site.id} contains no devices.")
+            else:
+                logger.warning(f"Membership for site {site.id} is missing 'device' attribute.")
+
             return site_devices
+
+        except Exception as e:
+            logger.error(f"Error processing site {site.id}: {e}", exc_info=True)
+            return {}
 
         # Process sites in parallel to fetch membership data
         with ThreadPoolExecutor(max_workers=10) as executor:
