@@ -24,7 +24,7 @@ class SettingsView(generic.ObjectListView):
 
     queryset = Settings.objects.all()
     table = SettingsTable
-    template_name = "ciscodnacnetbox/settings.html"
+    template_name = "netbox_ciscodnac_plugin/settings.html"
 
 
 class SettingsEdit(generic.ObjectEditView):
@@ -34,7 +34,7 @@ class SettingsEdit(generic.ObjectEditView):
 
     queryset = Settings.objects.all()
     form = SettingsForm
-    template_name = "ciscodnacnetbox/settings_edit.html"
+    template_name = "netbox_ciscodnac_plugin/settings_edit.html"
 
 
 class SettingsDelete(generic.ObjectDeleteView):
@@ -65,12 +65,12 @@ class StatusView(View):
 
         # Check that Cisco DNA Center Settings exists
         if Settings.objects.filter().exists() is False:
-            return redirect("/plugins/ciscodnacnetbox/settings/")
+            return redirect("/plugins/netbox_ciscodnac_plugin/settings/")
 
         data = Data.status()
         return render(
             request,
-            "ciscodnacnetbox/status.html",
+            "netbox_ciscodnac_plugin/status.html",
             {
                 "dnac": data["dnac"],
                 "netbox": request.build_absolute_uri("/"),
@@ -89,7 +89,7 @@ class SyncFull(View):
     def get(self, request, **kwargs):
         # Check that we have Cisco DNA Center settings
         if Settings.objects.filter().exists() is False:
-            return redirect("/plugins/ciscodnacnetbox/settings/")
+            return redirect("/plugins/netbox_ciscodnac_plugin/settings/")
 
         # Check if RQ workers are running
         if System.RQ.status() is False:
@@ -102,7 +102,7 @@ class SyncFull(View):
                 template.render(
                     {
                         "error": error_msg,
-                        "exception": "ciscodnacnetbox plugin - RQ",
+                        "exception": "netbox_ciscodnac_plugin plugin - RQ",
                         "netbox_version": settings.VERSION,
                         "python_version": platform.python_version(),
                     }
@@ -116,14 +116,14 @@ class SyncFull(View):
                 raise Http404()
             return render(
                 request,
-                "ciscodnacnetbox/sync_full.html",
+                "netbox_ciscodnac_plugin/sync_full.html",
                 {
                     "data": data,
                 },
             )
         return render(
             request,
-            "ciscodnacnetbox/loading_job.html",
+            "netbox_ciscodnac_plugin/loading_job.html",
             {
                 "data": data,
             },
@@ -139,7 +139,7 @@ class SyncFullFailed(View):
         data = Data.job_status(id)
         return render(
             request,
-            "ciscodnacnetbox/sync_full_failed.html",
+            "netbox_ciscodnac_plugin/sync_full_failed.html",
             {
                 "data": data,
             },
@@ -167,7 +167,7 @@ class DeviceView(View):
         data = Data.devices(**kwargs)
         return render(
             request,
-            "ciscodnacnetbox/devices.html",
+            "netbox_ciscodnac_plugin/devices.html",
             {
                 "data": data,
             },
@@ -183,7 +183,7 @@ class SyncDevices(View):
         data = Data.sync_devices(**kwargs)
         return render(
             request,
-            "ciscodnacnetbox/sync_devices.html",
+            "netbox_ciscodnac_plugin/sync_devices.html",
             {
                 "data": data,
             },
@@ -199,7 +199,7 @@ class SitesView(View):
         data = Data.sites(**kwargs)
         return render(
             request,
-            "ciscodnacnetbox/sites.html",
+            "netbox_ciscodnac_plugin/sites.html",
             {
                 "data": data,
             },
@@ -215,7 +215,7 @@ class SyncSites(View):
         data = Data.sync_sites(**kwargs)
         return render(
             request,
-            "ciscodnacnetbox/sync_sites.html",
+            "netbox_ciscodnac_plugin/sync_sites.html",
             {
                 "data": data,
             },
@@ -241,7 +241,7 @@ class PurgeTenant(View):
                 "obj": tenant,
                 "form": form,
                 "return_url": reverse(
-                    "plugins:ciscodnacnetbox:purge_tenant", args=(kwargs["pk"],)
+                    "plugins:netbox_ciscodnac_plugin:purge_tenant", args=(kwargs["pk"],)
                 ),
             },
         )
@@ -252,7 +252,7 @@ class PurgeTenant(View):
         data = Data.purge_tenant(**kwargs)
         return render(
             request,
-            "ciscodnacnetbox/purge_tenant.html",
+            "netbox_ciscodnac_plugin/purge_tenant.html",
             {
                 "data": data,
             },

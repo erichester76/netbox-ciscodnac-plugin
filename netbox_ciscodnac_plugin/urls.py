@@ -21,13 +21,16 @@ urlpatterns = (
         name="settings_delete_bulk",
     ),
     path("settings/<int:pk>/changelog/", ObjectChangeLogView.as_view(), name="settings_changelog", kwargs={"model": Settings}),
+   
     # Status
     path("status/", views.StatusView.as_view(), name="status"),
+    
     # Tenant Data
     path("devices/", views.DeviceView.as_view(), name="devices"),
     path("<int:pk>/devices/", views.DeviceView.as_view(), name="devices"),
     path("sites/", views.SitesView.as_view(), name="sites"),
     path("<int:pk>/sites/", views.SitesView.as_view(), name="sites"),
+    
     # Sync
     path("sync/full/", views.SyncFull.as_view(), name="sync_full"),
     path("sync/full/<uuid:id>/", views.SyncFull.as_view(), name="sync_full"),
@@ -49,8 +52,10 @@ urlpatterns = (
         views.SyncDevices.as_view(),
         name="sync_devices",
     ),
+    
     # Jobs
     path("job/<uuid:id>/", views.JobStatus.as_view(), name="job_status"),
+    
     # Purge
     path("purge/<int:pk>/tenant/", views.PurgeTenant.as_view(), name="purge_tenant"),
 )

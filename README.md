@@ -1,14 +1,14 @@
-# ciscodnacnetbox
+# netbox_ciscodnac_plugin
 
-![PyPI - Downloads](https://img.shields.io/pypi/dm/ciscodnacnetbox)
-![PyPI - Wheel](https://img.shields.io/pypi/wheel/ciscodnacnetbox)
-![PyPI](https://img.shields.io/pypi/v/ciscodnacnetbox)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/netbox_ciscodnac_plugin)
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/netbox_ciscodnac_plugin)
+![PyPI](https://img.shields.io/pypi/v/netbox_ciscodnac_plugin)
 
 *Cisco DNA Center Integration with NetBox*
 
 ---
 
-```ciscodnacnetbox``` is a NetBox Plugin for Cisco DNA Center.  
+```netbox_ciscodnac_plugin``` is a NetBox Plugin for Cisco DNA Center.  
 It uses the Cisco DNA Center Platform APIs to sync data.
 
 ## Prerequisites
@@ -16,13 +16,13 @@ It uses the Cisco DNA Center Platform APIs to sync data.
     - Supported release: 1.3.3+
 - NetBox
     - Supported release: 4.x
-        - version ciscodnacnetbox 4.0.1
+        - version netbox_ciscodnac_plugin 4.0.1
     - Supported release: 3.2
-        - version ciscodnacnetbox 3.2.1
+        - version netbox_ciscodnac_plugin 3.2.1
     - Supported release: 3.0
-        - version ciscodnacnetbox 3.0.3
+        - version netbox_ciscodnac_plugin 3.0.3
     - Supported release: 2.10
-        - version ciscodnacnetbox 1.0.1
+        - version netbox_ciscodnac_plugin 1.0.1
 - Python
   - Version: 3.3+
 
@@ -47,12 +47,12 @@ It uses the Cisco DNA Center Platform APIs to sync data.
 ## Getting Started
 
 - Install the plugin from PyPi
-    - ```pip install ciscodnacnetbox```
+    - ```pip install netbox_ciscodnac_plugin```
 
 - Enable the plugin in ```configuration.py``` of NetBox
     ```
     PLUGINS = [
-        'ciscodnacnetbox',
+        'netbox_ciscodnac_plugin',
     ]
     ```
 (More details at https://netbox.readthedocs.io/en/stable/plugins/)
@@ -61,7 +61,7 @@ If using Docker with NetBox, follow instructions on https://github.com/netbox-co
 
 ## Sync your data from Cisco DNA Center to NetBox
 
-* Add your Cisco DNA Center(s) in Settings at the ciscodnacnetbox plugin
+* Add your Cisco DNA Center(s) in Settings at the netbox_ciscodnac_plugin plugin
 * Check status dashboard that API calls are OK towards your Cisco DNA Center (refresh if being cached)
 * Use the buttons on the Dashboard to sync (Sites is mandatory for Devices to be assigned in Netbox)
 
