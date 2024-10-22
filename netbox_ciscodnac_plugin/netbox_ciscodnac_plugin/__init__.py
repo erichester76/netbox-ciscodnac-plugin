@@ -110,32 +110,53 @@ class CiscoDNAC:
         return tenant.sites.get_site_count().response
 
     @classmethod
-    def devices_to_sites(cls, tenant):
-        """
-        Map Device Serial Number to Site ID from Cisco DNA Center.
-        """
-        results = {}
+    from concurrent.futures import ThreadPoolExecutor
+from django.core.cache import cache
 
-        # Fetch sites from DNA Center in batches
+def devices_to_sites(cls, tenant):
+    """
+    Map Device Serial Number to Site ID from Cisco DNA Center, with caching.
+    """
+    results = {}
+
+    # Cache key to store sites list
+    cache_key_sites = f'dnac_sites_{tenant.hostname}'
+    cached_sites = cache.get(cache_key_sites)
+
+    if cached_sites is None:
+        # Fetch sites from DNA Center in batches and cache the result
         sites = cls.get_paginated_data(tenant.sites.get_site, tenant)
+        cache.set(cache_key_sites, sites, timeout=300)  # Cache for 5 minutes
+    else:
+        sites = cached_sites
 
-        def process_site(site):
-            # Fetch membership for the site
+    def process_site(site):
+        # Cache key for site membership
+        cache_key_membership = f'dnac_membership_{site.id}'
+        cached_membership = cache.get(cache_key_membership)
+
+        if cached_membership is None:
+            # Fetch membership for the site and cache it
             membership = tenant.sites.get_membership(site_id=site.id)
-            site_devices = {}
-            if membership and hasattr(membership, 'device'):
-                for members in membership.device:
-                    for device in members.response:
-                        site_devices[device.serialNumber] = site.id
-            return site_devices
+            cache.set(cache_key_membership, membership, timeout=300)  # Cache for 5 minutes
+        else:
+            membership = cached_membership
 
-        # Process sites in parallel to fetch membership data
-        with ThreadPoolExecutor(max_workers=10) as executor:
-            site_device_maps = list(executor.map(process_site, sites))
+        site_devices = {}
+        if membership and hasattr(membership, 'device'):
+            for members in membership.device:
+                for device in members.response:
+                    site_devices[device.serialNumber] = site.id
+        return site_devices
 
-        # Combine results from all processed sites
-        for site_device_map in site_device_maps:
-            results.update(site_device_map)
+    # Process sites in parallel to fetch membership data
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        site_device_maps = list(executor.map(process_site, sites))
 
-        return results
+    # Combine results from all processed sites
+    for site_device_map in site_device_maps:
+        results.update(site_device_map)
+
+    return results
+
 
