@@ -14,12 +14,12 @@ menu_items = (
             PluginMenuButton(
                 link="plugins:netbox_ciscodnac_plugin:sync_sites",
                 title="Full Sync",
-                icon_class="mdi mdi-all-inclusive",
+                icon_class="mdi mdi-domain",
             ),
             PluginMenuButton(
                 link="plugins:netbox_ciscodnac_plugin:sync_devices",
                 title="Full Sync",
-                icon_class="mdi mdi-all-inclusive",
+                icon_class="mdi mdi-router",
             ),
             PluginMenuButton(
                 link="plugins:netbox_ciscodnac_plugin:settings",
