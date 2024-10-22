@@ -255,9 +255,19 @@ class Data:
             if System.Check.sites(tenant=tenant) is False:
                 data[tenant] = [{"sync_status": "Error: Sync sites first"}]
                 continue
+            
             # Map Devices (Serial) against Site UUID
             site_members = CiscoDNAC.devices_to_sites(tenant=dnac)
+            # Ensure site_members is not None before proceeding
+            if site_members is None:
+                data[tenant] = [{"sync_status": "Error: No site members found"}]
+                continue
 
+            # Ensure tenants exist before looping
+            if not tenants or not tenants.dnac:
+                data["sync_status"] = "Error: No tenants found"
+                return data
+            
             # Get devices from Cisco DNA Center
             for device in tenants.devices(tenant=dnac):
 
