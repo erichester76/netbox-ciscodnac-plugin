@@ -50,12 +50,12 @@ class Netbox:
                         name="Cisco DNA Center",
                         slug="cisco-dna-center",
                         color=ColorChoices.COLOR_BLUE,
-                        description="Managed by ciscodnacnetbox",
+                        description="Managed by netbox_ciscodnac_plugin",
                     )
                 else:
                     System.PluginTag.filter().update(
                         name="Cisco DNA Center",
-                        description="Managed by ciscodnacnetbox",
+                        description="Managed by netbox_ciscodnac_plugin",
                     )
                 return System.PluginTag.get()
             elif "update" in kwargs["task"]:

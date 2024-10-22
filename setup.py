@@ -20,12 +20,12 @@ PACKAGE_KEYWORDS = [
 ]
 
 setup(
-    name="ciscodnacnetbox",
+    name="netbox_ciscodnac_plugin",
     version="3.2.1",
     description="Cisco DNA Center Integration with NetBox",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/robertcsapo/ciscodnacnetbox",
+    url="https://github.com/erichester76/netbox_ciscodnac_plugin",
     author="Robert Csapo",
     author_email="rcsapo@cisco.com",
     license="CISCO SAMPLE CODE LICENSE",

@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 )),
             ],
             options={
-                "app_label": "ciscodnacnetbox",
+                "app_label": "netbox_ciscodnac_plugin",
                 "ordering": ["hostname"],
             },
         ),

@@ -4,23 +4,23 @@ from utilities.choices import ButtonColorChoices
 
 menu_items = (
     PluginMenuItem(
-        link="plugins:ciscodnacnetbox:status",
+        link="plugins:netbox_ciscodnac_plugin:status",
         link_text="Status",
-        permissions=["ciscodnacnetbox.admin_full"],
+        permissions=["netbox_ciscodnac_plugin.admin_full"],
         buttons=(
             PluginMenuButton(
-                link="plugins:ciscodnacnetbox:sync_full",
+                link="plugins:netbox_ciscodnac_plugin:sync_full",
                 title="Settings",
                 icon_class="mdi mdi-all-inclusive",
                 color=ButtonColorChoices.BLUE,
-                permissions=["ciscodnacnetbox.admin_full"],
+                permissions=["netbox_ciscodnac_plugin.admin_full"],
             ),
             PluginMenuButton(
-                link="plugins:ciscodnacnetbox:settings",
+                link="plugins:netbox_ciscodnac_plugin:settings",
                 title="Settings",
                 icon_class="mdi mdi-cog",
                 color=ButtonColorChoices.BLUE,
-                permissions=["ciscodnacnetbox.admin_full"],
+                permissions=["netbox_ciscodnac_plugin.admin_full"],
             ),
         ),
     ),

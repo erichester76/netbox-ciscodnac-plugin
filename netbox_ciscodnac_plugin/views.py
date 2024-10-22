@@ -12,9 +12,9 @@ from netbox.views import generic
 from .models import Settings
 from .forms import SettingsForm
 from .tables import SettingsTable
-from .ciscodnac.data import Data
-from .ciscodnac.netbox import Netbox
-from .ciscodnac.utilities import System
+from .netbox_ciscodnac_plugin.data import Data
+from .netbox_ciscodnac_plugin.netbox import Netbox
+from .netbox_ciscodnac_plugin.utilities import System
 
 
 class SettingsView(generic.ObjectListView):

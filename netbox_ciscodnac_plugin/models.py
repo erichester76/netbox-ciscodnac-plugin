@@ -24,11 +24,11 @@ class Settings(ChangeLoggingMixin, models.Model):
     objects = RestrictedQuerySet.as_manager()
 
     class Meta:
-        app_label = "ciscodnacnetbox"
+        app_label = "netbox_ciscodnac_plugin"
         ordering = ["hostname"]
 
     def __str__(self):
         return self.hostname
 
     def get_absolute_url(self):
-        return reverse("plugins:ciscodnacnetbox:settings")
+        return reverse("plugins:netbox_ciscodnac_plugin:settings")

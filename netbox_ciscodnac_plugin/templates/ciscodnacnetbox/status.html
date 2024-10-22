@@ -4,10 +4,10 @@
 {% block content %}
 
 <div class="pull-right noprint">
-<a href="/plugins/ciscodnacnetbox/settings/" class="btn btn-primary">
+<a href="/plugins/netbox_ciscodnac_plugin/settings/" class="btn btn-primary">
 <span class="mdi mdi-cog" aria-hidden="true"></span> Settings
 </a>
-<a href="/plugins/ciscodnacnetbox/status/" class="btn btn-primary">
+<a href="/plugins/netbox_ciscodnac_plugin/status/" class="btn btn-primary">
 <span class="mdi mdi-refresh" aria-hidden="true"></span> Refresh
 </a>
 </div>
@@ -25,7 +25,7 @@
 <tbody>
 <tr style="text-align: center;" class="even">
 <td style="width: 33.3333%;">
-    <a href="{% url 'plugins:ciscodnacnetbox:sync_full' %}">
+    <a href="{% url 'plugins:netbox_ciscodnac_plugin:sync_full' %}">
     <button type="button" class="btn btn-lg btn-primary" aria-hidden="true">
     <i class="mdi mdi-all-inclusive mdi-48px">
     </i>
@@ -33,7 +33,7 @@
     <br>Full Sync</td>
     </a>
 <td style="width: 33.3333%;">
-    <a href="{% url 'plugins:ciscodnacnetbox:sync_sites' %}">
+    <a href="{% url 'plugins:netbox_ciscodnac_plugin:sync_sites' %}">
     <button type="button" class="btn btn-lg btn-primary" aria-hidden="true">
     <i class="mdi mdi-domain mdi-48px">
     </i>
@@ -41,7 +41,7 @@
     <br>Sites Sync</td>
     </a>
 <td style="width: 33.3333%;">
-    <a href="{% url 'plugins:ciscodnacnetbox:sync_devices' %}">
+    <a href="{% url 'plugins:netbox_ciscodnac_plugin:sync_devices' %}">
     <button type="button" class="btn btn-lg btn-primary" aria-hidden="true">
     <i class="mdi mdi-router mdi-48px">
     </i>
@@ -88,19 +88,19 @@
         <tr class="even">
         <td>{{ tenant }}</td>
         <td>
-            <a href="{% url 'plugins:ciscodnacnetbox:sites' pk=data.id %}">
+            <a href="{% url 'plugins:netbox_ciscodnac_plugin:sites' pk=data.id %}">
             {{ data.sites }}
             </a>
         </td>
         <td>
-            <a href="{% url 'plugins:ciscodnacnetbox:devices' pk=data.id %}">
+            <a href="{% url 'plugins:netbox_ciscodnac_plugin:devices' pk=data.id %}">
             {{ data.devices }}
             </a>
         </td>
         <td>
             {% if 'success' in data.api %}
-            <a href="{% url 'plugins:ciscodnacnetbox:sync_sites' pk=data.id %}" class="btn btn-xs btn-primary mdi mdi-domain" aria-hidden="true"></a>
-            <a href="{% url 'plugins:ciscodnacnetbox:sync_devices' pk=data.id %}" class="btn btn-xs btn-primary mdi mdi-router" aria-hidden="true"></a>
+            <a href="{% url 'plugins:netbox_ciscodnac_plugin:sync_sites' pk=data.id %}" class="btn btn-xs btn-primary mdi mdi-domain" aria-hidden="true"></a>
+            <a href="{% url 'plugins:netbox_ciscodnac_plugin:sync_devices' pk=data.id %}" class="btn btn-xs btn-primary mdi mdi-router" aria-hidden="true"></a>
             {% else %}
             <span class="text-primary disabled" tabindex="0" data-toggle="tooltip" title="{{ data.api }}"><i class="btn btn-xs btn-primary mdi mdi-domain disabled"></i></span>
             <span class="text-primary disabled" tabindex="0" data-toggle="tooltip" title="{{ data.api }}"><i class="btn btn-xs btn-primary mdi mdi-router disabled"></i></span>
@@ -131,7 +131,7 @@
         <th>Description</th>
         <th>Created</th>
         <th>Purge</th>
-        <th>Managed by ciscodnacnetbox plugin</th>
+        <th>Managed by netbox_ciscodnac_plugin plugin</th>
         </tr>
     </thead>
     {% for tenant, data in netbox_tenants.items %}
@@ -140,7 +140,7 @@
         <td>{{ tenant }}</td>
         <td>{{ data.description }} </td>
         <td>{{ data.created }}</td>
-        <td><a href="{% url 'plugins:ciscodnacnetbox:purge_tenant' pk=data.id %}" class="btn btn-xs btn-danger mdi mdi-delete-forever" aria-hidden="true"></a></td>
+        <td><a href="{% url 'plugins:netbox_ciscodnac_plugin:purge_tenant' pk=data.id %}" class="btn btn-xs btn-danger mdi mdi-delete-forever" aria-hidden="true"></a></td>
         <td>
             {% if data.managed %}
             <span class="text-success" tabindex="0" data-toggle="tooltip" title="Managed"><i class="mdi mdi-check-circle-outline"></i></span>

@@ -14,7 +14,7 @@ class MaskedPassword(tables.Column):
 class SettingsTable(NetBoxTable):
     pk = columns.ToggleColumn()
     hostname = tables.LinkColumn(
-        "plugins:ciscodnacnetbox:settings_edit", args=[A("pk")]
+        "plugins:netbox_ciscodnac_pluginsettings_edit", args=[A("pk")]
     )
     username = tables.Column()
     password = MaskedPassword()
