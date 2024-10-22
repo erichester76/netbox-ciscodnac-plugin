@@ -62,30 +62,31 @@ class CiscoDNAC:
             self.dnac_status[tenant.hostname] = error_msg
             return False, None
 
-    def get_paginated_data(self, tenant, api_call, **kwargs):
+    def get_paginated_data(self, tenant, api_call, limit=500, **kwargs):
         """
         Generic method to handle paginated API responses from Cisco DNA Center.
         Args:
             tenant: The tenant object containing authentication info.
             api_call: The specific API call to execute (e.g., tenant.devices.get_device_list).
+            limit: Maximum number of results per page (default is 500).
             **kwargs: Additional parameters for the API call (like filters).
         Returns:
             A list of all items returned by the paginated API.
         """
         items = []
-        start_index = 1  # Start with the first page
-        max_results = 500  # Default max results per page
+        offset = 1  # Start with the first page
 
         while True:
-            response = api_call(start_index=start_index, **kwargs).response
+            # Fetch the current page of results
+            response = api_call(offset=offset, limit=limit, **kwargs).response
             items.extend(response)
 
-            # If the response length is less than max_results, we've retrieved all data
-            if len(response) < max_results:
+            # If the number of results is less than the limit, we've retrieved all data
+            if len(response) < limit:
                 break
 
-            # Increase start_index for next page of results
-            start_index += max_results
+            # Increment the offset for the next page of results
+            offset += limit
 
         return items
 
