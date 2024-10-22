@@ -117,69 +117,39 @@ class CiscoDNAC:
     @classmethod
     def devices_to_sites(cls, tenant):
         """
-        Map Device Serial Number to Site ID from Cisco DNA Center, with caching.
+        Map Device Serial Number to Site ID from Cisco DNA Center.
         """
         results = {}
+        
+        # Fetch sites from DNA Center
+        sites_response = tenant.sites.get_site().response
+        if not sites_response:
+            raise ValueError("No sites found in Cisco DNA Center.")
+        
+        for site in sites_response:
+            # Fetch membership for each site
+            membership = tenant.sites.get_membership(site_id=site.id)
+            
+            if not membership or not hasattr(membership, 'device'):
+                # Log if membership is None or doesn't have 'device'
+                print(f"No membership or devices found for site {site.id}")
+                continue  # Skip if no membership or devices
 
-        # Cache key to store sites list
-        cache_key_sites = f'dnac_sites_cache'
-        cached_sites = cache.get(cache_key_sites)
+            if membership.device is None:
+                # Log and continue if device is None
+                print(f"membership.device is None for site {site.id}")
+                continue  # Skip the site if devices are missing
 
-        if cached_sites is None:
-            # Fetch sites from DNA Center in batches and cache the result
-            sites = cls.get_paginated_data(tenant, tenant.sites.get_site)
-
-            cache.set(cache_key_sites, sites, timeout=300)  # Cache for 5 minutes
-        else:
-            sites = cached_sites
-
-    def process_site(site, tenant):
-        """
-        Process a site and map its devices to site IDs, with caching and error handling.
-        """
-        # Cache key for site membership
-        cache_key_membership = f'dnac_membership_{site.id}'
-        cached_membership = cache.get(cache_key_membership)
-
-        try:
-            if cached_membership is None:
-                # Fetch membership for the site and cache it
-                membership = tenant.sites.get_membership(site_id=site.id)
+            # If membership contains devices, map them
+            for members in membership.device:
+                if not members or not hasattr(members, 'response'):
+                    print(f"No response found in membership for site {site.id}")
+                    continue  # Skip if no valid device response
                 
-                # Ensure that membership is not None and cache it only if valid
-                if membership:
-                    cache.set(cache_key_membership, membership, timeout=300)  # Cache for 5 minutes
-                else:
-                    logger.warning(f"Membership for site {site.id} is None. Skipping.")
-                    return {}
-
-            else:
-                membership = cached_membership
-
-            # Initialize the device mapping
-            site_devices = {}
-
-            # Check if membership contains devices and is structured as expected
-            if membership and hasattr(membership, 'device'):
-                if membership.device:
-                    for members in membership.device:
-                        if hasattr(members, 'response') and members.response:
-                            for device in members.response:
-                                if hasattr(device, 'serialNumber'):
-                                    site_devices[device.serialNumber] = site.id
-                                else:
-                                    logger.warning(f"Device in site {site.id} has no serialNumber.")
-                        else:
-                            logger.warning(f"No response found for membership devices in site {site.id}.")
-                else:
-                    logger.warning(f"Membership for site {site.id} contains no devices.")
-            else:
-                logger.warning(f"Membership for site {site.id} is missing 'device' attribute.")
-
-            return site_devices
-
-        except Exception as e:
-            logger.error(f"Error processing site {site.id}: {e}", exc_info=True)
-            return {}
-
-
+                for device in members.response:
+                    if hasattr(device, 'serialNumber'):
+                        results[device.serialNumber] = site.id
+                    else:
+                        print(f"Device without serial number found in site {site.id}")
+        
+        return results
