@@ -8,7 +8,17 @@ menu_items = (
         buttons=(
             PluginMenuButton(
                 link="plugins:netbox_ciscodnac_plugin:sync_full",
-                title="Settings",
+                title="Full Sync",
+                icon_class="mdi mdi-all-inclusive",
+            ),
+            PluginMenuButton(
+                link="plugins:netbox_ciscodnac_plugin:sync_sites",
+                title="Full Sync",
+                icon_class="mdi mdi-all-inclusive",
+            ),
+            PluginMenuButton(
+                link="plugins:netbox_ciscodnac_plugin:sync_devices",
+                title="Full Sync",
                 icon_class="mdi mdi-all-inclusive",
             ),
             PluginMenuButton(
