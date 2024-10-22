@@ -1,5 +1,6 @@
 from netbox.plugins import PluginConfig
 from .metadata import App
+from .navigation import menu_items
 
 
 class CiscoDNACenterConfig(PluginConfig):
@@ -13,5 +14,6 @@ class CiscoDNACenterConfig(PluginConfig):
     default_settings = {}
     base_url = "netbox_ciscodnac_plugin"
     caching_config = {}
+    menu_items = menu_items
 
 config = CiscoDNACenterConfig
