@@ -155,8 +155,8 @@ class Data:
         job = cache.get("netbox_ciscodnac_plugin_bg")
         if job is None:
             # If not, start full sync task
-            job = full_sync.delay(**kwargs)
-            cache.set("netbox_ciscodnac_plugin_bg", job.id, timeout=600)
+            job = full_sync.delay(timeout=900, **kwargs)
+            cache.set("netbox_ciscodnac_plugin_bg", job.id, timeout=900)
 
         # Get Job Status
         j = queue.fetch_job(cache.get("netbox_ciscodnac_plugin_bg"))
@@ -164,11 +164,11 @@ class Data:
         if "finished" == j.get_status():
             # Start again, if cache expired
             job = full_sync.delay(**kwargs)
-            cache.set("netbox_ciscodnac_plugin_bg", job.id, timeout=600)
+            cache.set("netbox_ciscodnac_plugin_bg", job.id, timeout=900)
         if j.get_status() in job_done:
             # Start again, if cache expired
             job = full_sync.delay(**kwargs)
-            cache.set("netbox_ciscodnac_plugin_bg", job.id, timeout=600)
+            cache.set("netbox_ciscodnac_plugin_bg", job.id, timeout=900)
         data["id"] = str(j.id)
         data["task"] = str(j.func_name)
         return data
