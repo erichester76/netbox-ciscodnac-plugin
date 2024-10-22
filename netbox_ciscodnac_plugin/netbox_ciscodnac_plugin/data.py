@@ -25,8 +25,8 @@ def full_sync(**kwargs):
     # Count the synced items
     for tenant in sites:
         data[tenant] = {}
-        Netbox.Purge.database(tenant=tenant, type="devices", data=devices[tenant])
-        Netbox.Purge.database(tenant=tenant, type="sites", data=sites[tenant])
+     #   Netbox.Purge.database(tenant=tenant, type="devices", data=devices[tenant])
+     #   Netbox.Purge.database(tenant=tenant, type="sites", data=sites[tenant])
     for tenant in sites:
         data[tenant]["sites"] = len(sites[tenant])
     for tenant in devices:
