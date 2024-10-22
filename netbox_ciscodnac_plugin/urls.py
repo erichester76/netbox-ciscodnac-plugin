@@ -3,7 +3,6 @@ from netbox.views.generic import ObjectChangeLogView
 from . import views
 from .models import Settings
 
-app_name = "netbox_ciscodnac_plugin"
 
 urlpatterns = (
     # Settings
