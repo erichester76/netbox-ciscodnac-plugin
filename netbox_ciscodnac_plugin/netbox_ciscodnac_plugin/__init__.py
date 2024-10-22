@@ -87,7 +87,8 @@ class CiscoDNAC:
         """
         results = {}
         for site in tenant.sites.get_site().response:
-            for members in tenant.sites.get_membership(site_id=site.id).device:
-                for device in members.response:
-                    results[device.serialNumber] = site.id
+            if tenant:
+               for members in tenant.sites.get_membership(site_id=site.id).device:
+                   for device in members.response:
+                       results[device.serialNumber] = site.id
         return results
