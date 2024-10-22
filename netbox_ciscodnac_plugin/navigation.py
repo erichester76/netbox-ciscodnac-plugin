@@ -1,5 +1,4 @@
 from extras.plugins import PluginMenuButton, PluginMenuItem
-from utilities.choices import ButtonColorChoices
 
 
 menu_items = (
@@ -12,14 +11,12 @@ menu_items = (
                 link="plugins:netbox_ciscodnac_plugin:sync_full",
                 title="Settings",
                 icon_class="mdi mdi-all-inclusive",
-                color=ButtonColorChoices.BLUE,
                 permissions=["netbox_ciscodnac_plugin.admin_full"],
             ),
             PluginMenuButton(
                 link="plugins:netbox_ciscodnac_plugin:settings",
                 title="Settings",
                 icon_class="mdi mdi-cog",
-                color=ButtonColorChoices.BLUE,
                 permissions=["netbox_ciscodnac_plugin.admin_full"],
             ),
         ),

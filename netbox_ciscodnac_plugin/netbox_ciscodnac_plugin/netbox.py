@@ -6,7 +6,6 @@ from dcim.models import Site, Device, DeviceRole, DeviceType, Manufacturer
 from ipam.models import IPAddress
 from dcim.choices import DeviceStatusChoices
 from tenancy.models import Tenant
-from utilities.choices import ColorChoices
 from .utilities import System
 
 
@@ -49,7 +48,6 @@ class Netbox:
                     Tag.objects.create(
                         name="Cisco DNA Center",
                         slug="cisco-dna-center",
-                        color=ColorChoices.COLOR_BLUE,
                         description="Managed by netbox_ciscodnac_plugin",
                     )
                 else:
@@ -208,14 +206,12 @@ class Netbox:
                 DeviceRole.objects.create(
                     name=role,
                     slug=slug.lower(),
-                    color=ColorChoices.COLOR_BLUE,
                     vm_role=False,
                     description="Managed by {}".format(tenant),
                 )
             else:
                 DeviceRole.objects.filter(name=role).update(
                     slug=slug.lower(),
-                    color=ColorChoices.COLOR_BLUE,
                     vm_role=False,
                     description="Managed by {}".format(tenant),
                 )
