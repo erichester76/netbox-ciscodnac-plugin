@@ -125,9 +125,15 @@ class CiscoDNAC:
             membership = tenant.sites.get_membership(site_id=site.id)
             
             if not membership or not hasattr(membership, 'device'):
-                print(f"No devices found for site {site.id}")
+                # Log if membership is None or doesn't have 'device'
+                print(f"No membership or devices found for site {site.id}")
                 continue  # Skip if no membership or devices
-            
+
+            if membership.device is None:
+                # Log and continue if device is None
+                print(f"membership.device is None for site {site.id}")
+                continue  # Skip the site if devices are missing
+
             # If membership contains devices, map them
             for members in membership.device:
                 if not members or not hasattr(members, 'response'):
@@ -141,3 +147,4 @@ class CiscoDNAC:
                         print(f"Device without serial number found in site {site.id}")
         
         return results
+
