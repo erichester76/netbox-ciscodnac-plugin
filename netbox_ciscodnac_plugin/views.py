@@ -61,7 +61,7 @@ class StatusView(View):
 
     def get(self, request):
         # Check that NetBox tag exists for Cisco DNA Center
-        Netbox.Sync.tags(task="system")
+        #Netbox.Sync.tags(task="system")
 
         # Check that Cisco DNA Center Settings exists
         if Settings.objects.filter().exists() is False:
