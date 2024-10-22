@@ -11,8 +11,7 @@ class CiscoDNACenterConfig(PluginConfig):
     author_email = App._EMAIL_
     required_settings = []
     default_settings = {}
-    base_url = App._NAME_
+    base_url = "netbox_ciscodnac_plugin"
     caching_config = {}
-
 
 config = CiscoDNACenterConfig
