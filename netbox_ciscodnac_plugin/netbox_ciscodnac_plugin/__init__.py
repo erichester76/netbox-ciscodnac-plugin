@@ -114,11 +114,30 @@ class CiscoDNAC:
         Map Device Serial Number to Site ID from Cisco DNA Center.
         """
         results = {}
-        for site in tenant.sites.get_site().response:
+        
+        # Fetch sites from DNA Center
+        sites_response = tenant.sites.get_site().response
+        if not sites_response:
+            raise ValueError("No sites found in Cisco DNA Center.")
+        
+        for site in sites_response:
+            # Fetch membership for each site
             membership = tenant.sites.get_membership(site_id=site.id)
             
-            if membership and hasattr(membership, 'device'):  # Check if the response contains devices
-                for members in membership.device:
-                    for device in members.response:
+            if not membership or not hasattr(membership, 'device'):
+                print(f"No devices found for site {site.id}")
+                continue  # Skip if no membership or devices
+            
+            # If membership contains devices, map them
+            for members in membership.device:
+                if not members or not hasattr(members, 'response'):
+                    print(f"No response found in membership for site {site.id}")
+                    continue  # Skip if no valid device response
+                
+                for device in members.response:
+                    if hasattr(device, 'serialNumber'):
                         results[device.serialNumber] = site.id
+                    else:
+                        print(f"Device without serial number found in site {site.id}")
+        
         return results
