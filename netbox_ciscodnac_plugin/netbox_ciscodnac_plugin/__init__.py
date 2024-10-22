@@ -118,7 +118,7 @@ class CiscoDNAC:
         results = {}
 
         # Cache key to store sites list
-        cache_key_sites = f'dnac_sites_{tenant.hostname}'
+        cache_key_sites = f'dnac_sites_cache'
         cached_sites = cache.get(cache_key_sites)
 
         if cached_sites is None:
