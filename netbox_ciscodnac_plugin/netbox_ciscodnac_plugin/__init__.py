@@ -123,7 +123,7 @@ class CiscoDNAC:
 
         if cached_sites is None:
             # Fetch sites from DNA Center in batches and cache the result
-            sites = cls.get_paginated_data(tenant.sites.get_site, tenant)
+            sites = cls.get_paginated_data(tenant, tenant.sites.get_site)
             cache.set(cache_key_sites, sites, timeout=300)  # Cache for 5 minutes
         else:
             sites = cached_sites
