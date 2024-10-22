@@ -4,7 +4,7 @@ from .metadata import App
 
 class CiscoDNACenterConfig(PluginConfig):
     version = App._VERSION_
-    name = App._NAME_
+    name = "netbox_ciscodnac_plugin"
     verbose_name = "Cisco DNA Center Sync Plugin"
     description = App._DESC_
     author = App._AUTHOR_
