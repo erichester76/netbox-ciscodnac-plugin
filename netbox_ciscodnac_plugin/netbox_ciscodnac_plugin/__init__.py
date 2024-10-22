@@ -62,17 +62,44 @@ class CiscoDNAC:
             self.dnac_status[tenant.hostname] = error_msg
             return False, None
 
+    def get_paginated_data(self, tenant, api_call, **kwargs):
+        """
+        Generic method to handle paginated API responses from Cisco DNA Center.
+        Args:
+            tenant: The tenant object containing authentication info.
+            api_call: The specific API call to execute (e.g., tenant.devices.get_device_list).
+            **kwargs: Additional parameters for the API call (like filters).
+        Returns:
+            A list of all items returned by the paginated API.
+        """
+        items = []
+        start_index = 1  # Start with the first page
+        max_results = 500  # Default max results per page
+
+        while True:
+            response = api_call(start_index=start_index, **kwargs).response
+            items.extend(response)
+
+            # If the response length is less than max_results, we've retrieved all data
+            if len(response) < max_results:
+                break
+
+            # Increase start_index for next page of results
+            start_index += max_results
+
+        return items
+
     def devices(self, tenant):
         """
-        Get Devices from Cisco DNA Center
+        Get all Devices from Cisco DNA Center (handles pagination).
         """
-        return tenant.devices.get_device_list().response
+        return self.get_paginated_data(tenant, tenant.devices.get_device_list)
 
     def sites(self, tenant):
         """
-        Get Sites from Cisco DNA Center
+        Get all Sites from Cisco DNA Center (handles pagination).
         """
-        return tenant.sites.get_site().response
+        return self.get_paginated_data(tenant, tenant.sites.get_site)
 
     def sites_count(self, tenant):
         """
@@ -87,8 +114,7 @@ class CiscoDNAC:
         """
         results = {}
         for site in tenant.sites.get_site().response:
-            if tenant:
-               for members in tenant.sites.get_membership(site_id=site.id).device:
-                   for device in members.response:
-                       results[device.serialNumber] = site.id
+            for members in tenant.sites.get_membership(site_id=site.id).device:
+                for device in members.response:
+                    results[device.serialNumber] = site.id
         return results
