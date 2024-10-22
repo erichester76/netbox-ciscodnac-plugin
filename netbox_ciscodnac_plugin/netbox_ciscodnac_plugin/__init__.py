@@ -182,14 +182,4 @@ class CiscoDNAC:
             logger.error(f"Error processing site {site.id}: {e}", exc_info=True)
             return {}
 
-        # Process sites in parallel to fetch membership data
-        with ThreadPoolExecutor(max_workers=10) as executor:
-            site_device_maps = list(executor.map(process_site, sites))
-
-        # Combine results from all processed sites
-        for site_device_map in site_device_maps:
-            results.update(site_device_map)
-
-        return results
-
 
